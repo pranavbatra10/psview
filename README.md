@@ -1,62 +1,86 @@
-# PSVIEW Autonomous Recruiter Agent
+# PSVIEW Autonomous Corporate Talent Agent
 
-![Next.js 15](https://img.shields.io/badge/Next.js%2015-black?style=for-the-badge&logo=next.js&logoColor=white)
-![Vercel AI SDK](https://img.shields.io/badge/Vercel%20AI%20SDK-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Gemini 2.5 Flash](https://img.shields.io/badge/Gemini%202.5%20Flash-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Vercel AI SDK](https://img.shields.io/badge/Vercel_AI_SDK-Core-black?style=flat&logo=vercel)](https://sdk.vercel.ai/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat&logo=supabase)](https://supabase.com/)
+[![Gemini](https://img.shields.io/badge/Model-Gemini_2.5_Flash-blue?style=flat&logo=google)](https://ai.google.dev/)
 
-[**Live Application**](#) • [**GitHub Repository**](#)
-
----
-
-## Overview
-
-The PSVIEW Autonomous Recruiter Agent is a highly advanced, state-driven cognitive pipeline designed to conduct personalized, real-time recruiting outreach. 
-
-Unlike traditional "LLM prompt-wrappers" that simply stream unstructured text, this architecture is built on a rigid cognitive engine. It strictly decouples **intent analysis** from **message generation**, allowing the agent to reason about the candidate's objections, classify sentiment, and advance through a structured hiring funnel—all before it ever drafts a reply.
+**Live Production App:** [INSERT_VERCEL_URL_HERE]  
+**GitHub Repository:** [https://github.com/pranavbatra10/psview](https://github.com/pranavbatra10/psview)  
 
 ---
 
-## Architectural X-Factors
+## ⚡ System Overview
 
-This system was engineered with three critical advanced capabilities:
+Most AI recruiting tools are simple "prompt wrappers" around standard chat models. They freely hallucinate text, lose track of candidate context, and fail to maintain brand safety.
 
-### 1. Deterministic State Constraints
-The agent does not hallucinate its workflow. It is tethered to a robust, PostgreSQL-backed state machine (powered by Supabase). The AI is forced to progress linearly through a structured recruiting funnel (`COLD_OPEN` → `QUALIFYING` → `OBJECTION_HANDLING` → `SCHEDULING` → `CLOSED`), ensuring it never pitches an interview before properly qualifying the candidate.
-
-### 2. Generative UI
-Instead of relying on clunky markdown links, the AI utilizes explicit tool-calling to render interactive React components natively in the chat stream. When the agent successfully transitions a candidate to the `SCHEDULING` stage, it automatically injects a live Calendar scheduling widget directly into the conversational UI.
-
-### 3. Defensive Safety Guardrails
-To guarantee brand safety and prevent rogue outputs, we implemented a dual-LLM architecture. Every single outbound message is intercepted by a secondary, asynchronous QA critique loop. This "Brand Auditor" agent cross-references the proposed message against the company's strict "don't" rules (e.g., "no corporate speak", "no overpromising salaries"). If a violation is detected, the auditor silently rewrites the message to enforce compliance before it ever hits the client.
+The **PSVIEW Autonomous Corporate Talent Agent** solves this by enforcing a **structured cognitive pipeline**. The architecture physically decouples cognitive reasoning (intent extraction, state evaluation, rule validation) from outward message generation. The agent operates within a strict execution boundary backed by PostgreSQL, ensuring deterministic execution on every conversation turn.
 
 ---
 
-## Local Setup Instructions
+## 🧠 Architectural X-Factors (Beyond Baseline Requirements)
 
-Follow these steps to run the cognitive pipeline locally:
+To demonstrate founding-level AI engineering capabilities, this engine implements four advanced architectural layers:
 
-### 1. Clone the Repository
+### 1. Deterministic Finite State Machine (FSM)
+The agent does not guess its objective. Conversations are mathematically locked into a directional state flow:
+`COLD_OPEN` ➔ `QUALIFYING` ➔ `OBJECTION_HANDLING` ➔ `SCHEDULING` ➔ `CLOSED`
+
+On every turn, the backend uses the Vercel AI SDK (`generateObject`) to extract candidate intent into strict JSON, persisting the exact conversation state to Supabase *before* updating the client UI.
+
+### 2. Generative UI & Dynamic Tool Calling
+When the agent successfully transitions a candidate into the `SCHEDULING` state, it bypasses static text links. Leveraging AI tool-calling, the backend dynamically emits and renders an interactive React `<Calendar>` component directly inside the candidate's chat feed.
+
+### 3. Defensive Brand Safety Guardrails (Secondary LLM Loop)
+Before any drafted response reaches the candidate, it is intercepted by an independent QA Agent. This secondary LLM evaluates the draft against the company's negative constraints (`dont` rules). If a tone violation or banned phrase is detected, the QA loop blocks the message, auto-rewrites it to maintain compliance, and logs a red visual warning to the recruiter's intelligence terminal.
+
+### 4. Magic Fill Context Scraper
+To eliminate manual onboarding friction, recruiters can paste any company's public career URL. A Next.js Server Action fetches the DOM, extracts unstructured culture/benefit copy, and transforms it into the strict structured JSON playbook required by the database schema.
+
+---
+
+## 🛠 Tech Stack
+
+* **Framework:** Next.js 15 (App Router, Server Actions, TypeScript)
+* **AI Orchestration:** Vercel AI SDK (`generateObject`, Tool Calling)
+* **Database & ORM:** Supabase (PostgreSQL)
+* **Primary LLM Engine:** Google Gemini 2.5 Flash (`gemini-2.5-flash`)
+* **UI & Styling:** Tailwind CSS, Shadcn UI, Lucide Icons (Dark Zinc Theme)
+
+---
+
+## 🚀 Local Setup & Installation
+
+Follow these steps to run the cognitive engine locally:
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/pranavbatra10/psview.git
 cd psview
 ```
 
-### 2. Install Dependencies
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
 ### 3. Configure Environment Variables
-We use a dual-key setup to load-balance AI inference and bypass free-tier rate limits.
-```bash
-cp .env.example .env.local
-```
-Open `.env.local` and populate the required API keys for Google Gemini and Supabase.
+Create a `.env.local` file in the root directory based on `.env.example`. We utilize a dual-key load-balancing setup for inference:
 
-### 4. Run the Development Server
+```env
+GOOGLE_GENERATIVE_AI_API_KEY_FORM="your_secondary_gemini_key_for_magic_fill"
+GOOGLE_GENERATIVE_AI_API_KEY="your_gemini_key_here"
+NEXT_PUBLIC_SUPABASE_URL="your_supabase_project_url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_supabase_anon_key"
+```
+
+### 4. Run the development server
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to configure your first recruiter persona and launch the simulator.
+Navigate to [http://localhost:3000](http://localhost:3000) to configure a new company playbook and initialize the split-screen simulator.
+
+---
+
+*Architected and engineered for the PSVIEW Founding Engineer technical evaluation.*
