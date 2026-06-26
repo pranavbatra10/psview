@@ -158,7 +158,7 @@ When you successfully handle objections and move the candidate to the SCHEDULING
 
     if (dontRules.length > 0) {
       const { object: qa } = await generateObject({
-        model: google("gemini-2.0-flash"),
+        model: google("gemini-1.5-flash"),
         schema: QASchema,
         prompt: `You are a brand safety QA auditor. Your job is to check if the following recruiter message violates ANY of the company's strict "don't" rules.
 
