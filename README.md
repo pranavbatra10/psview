@@ -1,37 +1,62 @@
-# PSVIEW Agent Sandbox
+# PSVIEW Autonomous Recruiter Agent
 
-PSVIEW Agent Sandbox is a high-performance, single-tenant Next.js 15 (App Router) application that deploys an autonomous AI talent recruiter.
+![Next.js 15](https://img.shields.io/badge/Next.js%2015-black?style=for-the-badge&logo=next.js&logoColor=white)
+![Vercel AI SDK](https://img.shields.io/badge/Vercel%20AI%20SDK-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Gemini 1.5 Pro](https://img.shields.io/badge/Gemini%201.5%20Pro-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
 
-What makes this agent intelligent and not just an LLM call is its structural decoupling of cognitive synthesis from message generation: the agent is locked within an execution boundary that mandates candidate intent classification, cultural integrity checks, and systemic state transitions prior to drafting customer-facing copy.
+[**Live Application**](#) • [**GitHub Repository**](#)
 
-## Technical Stack
-- **Framework**: Next.js 15 (App Router)
-- **UI & Styling**: Tailwind CSS, Shadcn UI (Zinc theme)
-- **Database**: Supabase (PostgreSQL)
-- **AI Core**: Vercel AI SDK (@ai-sdk/google) with `gemini-1.5-pro`
-- **Validation**: Zod (for strict JSON schema validation)
+---
 
-## Architecture & Technical Decisions
+## Overview
 
-### 1. Deterministic State Machine
-Instead of relying on an open-ended conversational chain, the AI recruiter strictly adheres to a state machine (`COLD_OPEN`, `QUALIFYING`, `OBJECTION_HANDLING`, `SCHEDULING`, `CLOSED`). The agent explicitly evaluates the conversation stage at every turn and forces transitions to push the interview process forward.
+The PSVIEW Autonomous Recruiter Agent is a highly advanced, state-driven cognitive pipeline designed to conduct personalized, real-time recruiting outreach. 
 
-### 2. Perceive -> Reason -> Act Cognitive Loop
-We avoid raw text streaming. The core reasoning engine API (`/api/agent/turn`) uses strict JSON Schema enforcement (`generateObject`) to output four required properties on every turn:
-- `perceivedIntent`: Real-time intent and objection classification.
-- `internalMonologue`: The agent's private strategic planning sequence based on company core values.
-- `proposedStageTransition`: The deterministic state shift.
-- `replyMessage`: The clean, fully compliant candidate-facing response.
+Unlike traditional "LLM prompt-wrappers" that simply stream unstructured text, this architecture is built on a rigid cognitive engine. It strictly decouples **intent analysis** from **message generation**, allowing the agent to reason about the candidate's objections, classify sentiment, and advance through a structured hiring funnel—all before it ever drafts a reply.
 
-### 3. Server-Side Execution
-All database mutations, AI orchestration, and context hydration are handled via secure Next.js Server Actions (`lib/actions.ts`) and API Routes (`app/api/agent/turn/route.ts`). The client only receives the final sanitized output and cognitive logs for the simulator UI, completely protecting the database credentials and AI API keys.
+---
 
-### 4. Split-Screen Playground Simulator
-The UI provides an elegant split-screen diagnostic environment:
-- **Candidate Sandbox**: A seamless chat interface for simulating the human candidate's behavior.
-- **Intelligence Terminal**: A live diagnostic view rendering the agent's real-time thought process, state transitions, and specific constraints.
+## Architectural X-Factors
 
-## Getting Started
-1. **Database Setup**: Execute the queries found in `supabase.sql` within your Supabase project's SQL editor.
-2. **Environment Configuration**: Ensure your `.env.local` contains `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `GOOGLE_GENERATIVE_AI_API_KEY`.
-3. **Start the Agent**: Run `npm run dev` and navigate to `http://localhost:3000/new` to initialize your first autonomous recruiter.
+This system was engineered with three critical advanced capabilities:
+
+### 1. Deterministic State Constraints
+The agent does not hallucinate its workflow. It is tethered to a robust, PostgreSQL-backed state machine (powered by Supabase). The AI is forced to progress linearly through a structured recruiting funnel (`COLD_OPEN` → `QUALIFYING` → `OBJECTION_HANDLING` → `SCHEDULING` → `CLOSED`), ensuring it never pitches an interview before properly qualifying the candidate.
+
+### 2. Generative UI
+Instead of relying on clunky markdown links, the AI utilizes explicit tool-calling to render interactive React components natively in the chat stream. When the agent successfully transitions a candidate to the `SCHEDULING` stage, it automatically injects a live Calendar scheduling widget directly into the conversational UI.
+
+### 3. Defensive Safety Guardrails
+To guarantee brand safety and prevent rogue outputs, we implemented a dual-LLM architecture. Every single outbound message is intercepted by a secondary, asynchronous QA critique loop. This "Brand Auditor" agent cross-references the proposed message against the company's strict "don't" rules (e.g., "no corporate speak", "no overpromising salaries"). If a violation is detected, the auditor silently rewrites the message to enforce compliance before it ever hits the client.
+
+---
+
+## Local Setup Instructions
+
+Follow these steps to run the cognitive pipeline locally:
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/pranavbatra10/psview.git
+cd psview
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+We use a dual-key setup to load-balance AI inference and bypass free-tier rate limits.
+```bash
+cp .env.example .env.local
+```
+Open `.env.local` and populate the required API keys for Google Gemini and Supabase.
+
+### 4. Run the Development Server
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to configure your first recruiter persona and launch the simulator.
