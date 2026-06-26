@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, industry, coreValues, hiringProfile, toneGuidelines } = body;
 
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY_FORM || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ success: false, error: "No API key configured" }, { status: 500 });
     }

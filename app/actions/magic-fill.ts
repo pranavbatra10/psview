@@ -1,7 +1,11 @@
 "use server";
 
 import { generateObject } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+
+const googleForm = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY_FORM || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
 import { z } from "zod";
 
 // Zod schema matching our form state exactly
@@ -63,7 +67,7 @@ export async function magicFillFromUrl(url: string) {
 
     // Use Gemini to extract structured context from the scraped text
     const { object: extracted } = await generateObject({
-      model: google("gemini-2.5-flash"),
+      model: googleForm("gemini-2.5-flash"),
       schema: ExtractedContextSchema,
       prompt: `You are analyzing a company's website to extract recruiting context. Based on the following website text, extract structured company information. Be detailed and specific — infer what you can from the copy, tone, and content.
 
