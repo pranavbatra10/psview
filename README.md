@@ -3,7 +3,7 @@
 ![Next.js 15](https://img.shields.io/badge/Next.js%2015-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![Vercel AI SDK](https://img.shields.io/badge/Vercel%20AI%20SDK-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Gemini 1.5 Pro](https://img.shields.io/badge/Gemini%201.5%20Pro-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
+![Gemini 2.5 Flash](https://img.shields.io/badge/Gemini%202.5%20Flash-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
 
 [**Live Application**](#) • [**GitHub Repository**](#)
 
