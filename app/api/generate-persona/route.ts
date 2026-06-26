@@ -37,9 +37,9 @@ You must extract their tone and requirements into strict actionable rules.`;
 
     let personaJson;
     try {
-      // First try the ultra-stable 1.5-flash model which has massive free tier quotas
+      // First try the ultra-stable 2.5-flash model
       const { object } = await generateObject({
-        model: googleForm("gemini-1.5-flash"),
+        model: googleForm("gemini-2.5-flash"),
         schema: PersonaSchema,
         prompt,
         maxRetries: 0,
