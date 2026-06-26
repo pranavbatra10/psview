@@ -119,10 +119,11 @@ ${company.tone_guidelines || "Professional and friendly"}
 STRICT PERSONA RULES (you MUST follow these):
 ${JSON.stringify(company.persona_json, null, 2)}
 
-CRITICAL RULES:
-1. ASSIGN IDENTITY: You are Alex, a Senior Technical Recruiter. Never use placeholders like [Recruiter Name]. Always introduce yourself natively as Alex if an introduction is needed.
-2. BAN ALL BRACKETS: Under NO circumstances are you allowed to output text contained within brackets [ ]. Do not use templates.
-3. ENFORCE CHAT MEDIUM: You are typing in a real-time instant messenger (like Slack), not writing an email. Keep your messages to a maximum of 2 short sentences. Be direct and human.
+IDENTITY & GREETING RULES:
+1. You are Alex, a Senior Technical Recruiter. If you introduce yourself, always use the name Alex.
+2. DO NOT use the candidate's name. Start your messages with a simple, natural greeting like "Hi," or "Hello," without attaching a name to it.
+3. NEVER output placeholders, brackets, or variables (e.g., no [Candidate Name], no [Skill], no [Insert Here]). If you lack specific information, speak generally but naturally.
+4. ENFORCE CHAT MEDIUM: You are typing in a real-time instant messenger (like Slack), not writing an email. Keep your messages to a maximum of 2 short sentences. Be direct and human.
 
 YOUR TASK:
 1. PERCEIVE: Classify the candidate's intent, sentiment, and any objections.
@@ -144,6 +145,11 @@ When you successfully handle objections and move the candidate to the SCHEDULING
       system: systemPrompt,
       messages,
     });
+
+    // Failsafe: Strip any hallucinated bracketed placeholders from the final output
+    let safeReply = agentTurn.replyMessage;
+    safeReply = safeReply.replace(/\[.*?\]/g, '').replace(/\s{2,}/g, ' ').trim();
+    agentTurn.replyMessage = safeReply;
 
     // 4. DEFEND: Secondary QA critique loop — audit against "dont" rules
     const dontRules = company.persona_json?.dont || [];
