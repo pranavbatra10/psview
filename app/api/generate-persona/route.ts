@@ -42,6 +42,7 @@ You must extract their tone and requirements into strict actionable rules.`;
         model: googleForm("gemini-1.5-flash"),
         schema: PersonaSchema,
         prompt,
+        maxRetries: 0,
       });
       personaJson = object;
     } catch (err: any) {
@@ -51,6 +52,7 @@ You must extract their tone and requirements into strict actionable rules.`;
         model: googleForm("gemini-2.5-flash"),
         schema: PersonaSchema,
         prompt,
+        maxRetries: 0,
       });
       personaJson = object;
     }

@@ -144,6 +144,7 @@ When you successfully handle objections and move the candidate to the SCHEDULING
       schema: AgentTurnSchema,
       system: systemPrompt,
       messages,
+      maxRetries: 0,
     });
 
     // Failsafe: Strip any hallucinated bracketed placeholders from the final output
@@ -160,6 +161,7 @@ When you successfully handle objections and move the candidate to the SCHEDULING
       const { object: qa } = await generateObject({
         model: google("gemini-1.5-flash"),
         schema: QASchema,
+        maxRetries: 0,
         prompt: `You are a brand safety QA auditor. Your job is to check if the following recruiter message violates ANY of the company's strict "don't" rules.
 
 DON'T RULES (the message MUST NOT do any of these):

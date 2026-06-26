@@ -65,10 +65,10 @@ export async function magicFillFromUrl(url: string) {
       return { error: "Could not extract meaningful text from this URL. The page may be JavaScript-rendered." };
     }
 
-    // Use Gemini to extract structured context from the scraped text
     const { object: extracted } = await generateObject({
       model: googleForm("gemini-2.5-flash"),
       schema: ExtractedContextSchema,
+      maxRetries: 0,
       prompt: `You are analyzing a company's website to extract recruiting context. Based on the following website text, extract structured company information. Be detailed and specific — infer what you can from the copy, tone, and content.
 
 WEBSITE TEXT:
